@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="/styles/styles.css"/>
+  <title>Vehicles For Sale</title>
+</head>
+<body>
+  <div class="page">
+    <h1 class="Truman">Trumanslist (Craigslist)</h1>
+
+    <section class="panel">
+      <h2 class="manage">Manage Vehicles</h2>
+
+      <h3 class="Add">Add Vehicle</h3>
+      <form id="createForm">
+        <label>
+          Title
+          <input type="text" id="title" required />
+        </label>
+        <label>
+          Year
+          <input type="number" id="year" required />
+        </label>
+        <label>
+          Make
+          <input type="text" id="make" required />
+        </label>
+        <label>
+          Model
+          <input type="text" id="model" required />
+        </label>
+        <label>
+          Price
+          <input type="number" id="price" required />
+        </label>
+        <label>
+          Mileage
+          <input type="number" id="mileage" required />
+        </label>
+        <label>
+          Main Image URL (e.g. /images/chevelle.jpg)
+          <input type="text" id="mainImageUrl" />
+        </label>
+        <label>
+          Description
+          <textarea id="description" rows="3"></textarea>
+        </label>
+
+        <button type="submit">Create Vehicle</button>
+      </form>
+
+      <hr />
+
+      <h3>Update or Delete Vehicle</h3>
+
+      <label>
+        Select vehicle
+        <select id="vehicleSelect">
+          <option value="">-- Choose a vehicle --</option>
+        </select>
+      </label>
+
+      <div id="editFields" style="display: none; margin-top: 10px;">
+        <label>
+          Price
+          <input type="number" id="editPrice" />
+        </label>
+        <label>
+          Mileage
+          <input type="number" id="editMileage" />
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" id="editAvailable" />
+            <span>Available</span>
+            </label>
+        <label>
+          Main Image URL
+          <input type="text" id="editMainImageUrl" />
+        </label>
+        <label>
+          Description
+          <textarea id="editDescription" rows="3"></textarea>
+        </label>
+
+        <button id="updateBtn">Update Vehicle</button>
+        <button id="deleteBtn">Delete Vehicle</button>
+      </div>
+    </section>
+
+    <section class="panel wide-panel">
+      <h2>Vehicles For Sale</h2>
+      <button id="refreshBtn">Refresh List</button>
+      <div id="vehiclesList"></div>
+    </section>
+  </div>
+
+  <script>
+  const apiBase = '/vehicles';
+  let vehiclesCache = [];
+
+  async function loadVehicles() {
+    try {
+      const res = await fetch(apiBase);
+      if (!res.ok) {
+        console.error('Failed to load vehicles', await res.text());
+        return;
+      }
+      vehiclesCache = await res.json();
+      populateVehicleSelect();
+      renderVehicleList();
+    } catch (err) {
+      console.error('Error loading vehicles', err);
+    }
+  }
+
+  function populateVehicleSelect(selectedId) {
+    const select = document.getElementById('vehicleSelect');
+    const previous = selectedId || select.value;
+
+    select.innerHTML = '<option value="">-- Choose a vehicle --</option>';
+
+    vehiclesCache.forEach((v) => {
+      const opt = document.createElement('option');
+      opt.value = v._id;
+      opt.textContent = `${v.year} ${v.make} ${v.model} - ${v.title || ''}`.trim();
+      if (opt.value === previous) opt.selected = true;
+      select.appendChild(opt);
+    });
+
+    if (select.value) {
+      fillEditFields(select.value);
+    } else {
+      document.getElementById('editFields').style.display = 'none';
+    }
+  }
+
+  function fillEditFields(id) {
+    const v = vehiclesCache.find((veh) => veh._id === id);
+    const edit = document.getElementById('editFields');
+
+    if (!v) {
+      edit.style.display = 'none';
+      return;
+    }
+
+    edit.style.display = 'block';
+    document.getElementById('editPrice').value = v.price ?? '';
+    document.getElementById('editMileage').value = v.mileage ?? '';
+    document.getElementById('editAvailable').checked = !!v.available;
+    document.getElementById('editMainImageUrl').value = v.mainImageUrl ?? '';
+    document.getElementById('editDescription').value = v.description ?? '';
+  }
+
+  function renderVehicleList() {
+    const container = document.getElementById('vehiclesList');
+    container.innerHTML = '';
+
+    if (!vehiclesCache.length) {
+      container.textContent = 'No vehicles found.';
+      return;
+    }
+
+    vehiclesCache.forEach((v) => {
+      const card = document.createElement('article');
+      card.className = 'vehicle-card';
+
+      card.innerHTML = `
+        <h3 class="vehicle-title">${v.title}</h3>
+        ${v.mainImageUrl
+          ? `<img class="vehicle-img" src="${v.mainImageUrl}" alt="${v.title}" />`
+          : ''
+        }
+        <div class="vehicle-info">
+          <p>Price: $${v.price}</p>
+          <p>Mileage: ${v.mileage}</p>
+          <p>Available: ${v.available ? 'Yes' : 'No'}</p>
+          <p>${v.description ? `<p>${v.description}</p>` : ''}</p>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  document.getElementById('createForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const body = {
+      title: document.getElementById('title').value,
+      year: Number(document.getElementById('year').value),
+      make: document.getElementById('make').value,
+      model: document.getElementById('model').value,
+      price: Number(document.getElementById('price').value),
+      mileage: Number(document.getElementById('mileage').value),
+      available: true,
+      mainImageUrl: document.getElementById('mainImageUrl').value,
+      description: document.getElementById('description').value,
+      images: []
+    };
+
+    try {
+      const res = await fetch(apiBase, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        alert('Vehicle created!');
+        e.target.reset();
+        await loadVehicles();
+      } else {
+        alert('Error creating vehicle');
+        console.error(await res.text());
+      }
+    } catch (err) {
+      console.error('Error creating vehicle', err);
+    }
+  });
+
+  document.getElementById('vehicleSelect').addEventListener('change', (e) => {
+    const id = e.target.value;
+    if (id) {
+      fillEditFields(id);
+    } else {
+      document.getElementById('editFields').style.display = 'none';
+    }
+  });
+
+  document.getElementById('updateBtn').addEventListener('click', async () => {
+    const select = document.getElementById('vehicleSelect');
+    const id = select.value;
+    if (!id) {
+      alert('Please select a vehicle to update.');
+      return;
+    }
+
+    const body = {
+      price: Number(document.getElementById('editPrice').value),
+      mileage: Number(document.getElementById('editMileage').value),
+      available: document.getElementById('editAvailable').checked,
+      mainImageUrl: document.getElementById('editMainImageUrl').value,
+      description: document.getElementById('editDescription').value
+    };
+
+    try {
+      const res = await fetch(`${apiBase}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        alert('Vehicle updated');
+        await loadVehicles();
+        populateVehicleSelect(id);
+      } else {
+        alert('Error updating vehicle');
+        console.error(await res.text());
+      }
+    } catch (err) {
+      console.error('Error updating vehicle', err);
+    }
+  });
+
+  document.getElementById('deleteBtn').addEventListener('click', async () => {
+    const select = document.getElementById('vehicleSelect');
+    const id = select.value;
+    if (!id) {
+      alert('Please select a vehicle to delete.');
+      return;
+    }
+
+    if (!confirm('Delete this vehicle?')) return;
+
+    try {
+      const res = await fetch(`${apiBase}/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        alert('Vehicle deleted');
+        await loadVehicles();
+      } else {
+        alert('Error deleting vehicle');
+        console.error(await res.text());
+      }
+    } catch (err) {
+      console.error('Error deleting vehicle', err);
+    }
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', loadVehicles);
+
+  loadVehicles();
+</script>
+
+</body>
+</html>

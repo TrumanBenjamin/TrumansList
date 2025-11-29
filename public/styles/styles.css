@@ -1,0 +1,225 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #2b3a4a 0, #111820 55%, #070a0f 100%);
+  color: #f1f5f9;
+}
+
+.panel {
+  background: rgba(45, 60, 90, 0.45);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 16px 20px 24px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 900px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.page {
+  max-width: 960px;
+  margin: 32px auto;
+  padding: 0 16px 40px;
+}
+
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  font-size: 0.95rem;
+  color: #cbd5f5;
+}
+
+.section-card {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 12px;
+  padding: 18px 18px 20px;
+  margin: 24px auto; 
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  max-width: 650px;
+  width: 100%; 
+}
+
+.section-card h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+}
+.manage {
+    margin: 0;
+}
+.Truman {
+    text-align: center;
+}
+
+
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+.checkbox {
+    margin: 6px 0;
+    font-size: 16px;
+}
+
+.editAvailable {
+    padding: 4px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 6px 8px;
+  margin-top: 3px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid #38bdf8;
+  outline-offset: 1px;
+}
+
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-top: 6px;
+  margin-right: 6px;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  color: #f9fafb;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.65);
+}
+
+button.secondary {
+  background: transparent;
+  color: #e5e7eb;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+}
+
+button.secondary:hover {
+  background: rgba(15, 23, 42, 0.95);
+}
+
+
+#vehiclesContainer {
+  margin-top: 10px;
+}
+
+#vehiclesList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 0 20px;
+}
+
+.vehicle-card {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0 auto;
+  width: calc(50% - 20px);
+  max-width: 450px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+  color: #e5e7eb;
+}
+
+.vehicle-card .vehicle-img {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.vehicle-card .vehicle-img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: #111;
+}
+
+.vehicle-card .vehicle-info p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+}
+
+.vehicle-summary {
+  margin-top: 10px !important;
+  opacity: 0.9;
+}
+
+#vehicleSelect {
+  background: rgba(15, 23, 42, 0.9);
+  color: #f1f5f9;
+  padding: 8px;
+  font-size: 15px;
+
+}
+
+.no-vehicles {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .vehicle-card {
+    grid-template-columns: 1fr;
+  }
+}
