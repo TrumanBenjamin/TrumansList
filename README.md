@@ -21,8 +21,6 @@ JavaScript, Node.js, Express.js, MongoDB Node Driver, HTML/CSS/JS and Fetch API 
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
-
 - [Web Site Name]https://www.mongodb.com/docs/atlas/
 - [Web Site Name]https://expressjs.com/en/4x/api.html
 
